@@ -31,3 +31,14 @@ vignettes/*.pdf
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
+
+# R Projects
+*.RProj
+
+# OSX shit
+*.DS_Store
+
+# Sensitive files until publication
+dat/*
+plt/*
+
