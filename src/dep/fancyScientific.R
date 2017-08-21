@@ -6,7 +6,7 @@
 
 fancy_scientific <- function(l) {
   # turn in to character string in scientific notation
-  l <- format(l, scientific = TRUE, digits = 2)
+  l <- format(l, scientific = TRUE, digits = 3)
   # quote the part before the exponent to keep all the digits
   l <- gsub("^(.*)e", "'\\1'e", l)
   # turn the 'e+' into plotmath format

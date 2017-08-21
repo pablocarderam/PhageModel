@@ -168,9 +168,9 @@ plotCompGraphs = function(sols) {
   g0A$widths = unit.pmax(g0A$widths,g1A$widths) # use the largest widths
   g1A$widths = unit.pmax(g0A$widths,g1A$widths) # use the largest widths
   
-  legendDF = sols[[3]][,c("time","S","R1","R2","R12","I1","I2","V1","V2")] # Get only data used in this graph
+  legendDF = sols[[3]][,c("time","S","R12","R1","R2","I1","I2","V1","V2")] # Get only data used in this graph
   
-  leg = getFullLegend(legendDF,c("time","Susceptible","Resistant to Phage 1 only   ","Resistant to Phage 2 only   ","Resistant to both phages  ","Infected with Phage 1      ","Infected with Phage 2      ","Phage 1","Phage 2"),c(cbPalette[3],cbPalette[7],cbPalette[8],cbPalette[1],cbPalette[2],cbPalette[5],cbPalette[4],cbPalette[6]) )
+  leg = getFullLegend(legendDF,c("time","Susceptible","Resistant to both phages  ","Resistant to Phage 1 only   ","Resistant to Phage 2 only   ","Infected with Phage 1      ","Infected with Phage 2      ","Phage 1","Phage 2"),c(cbPalette[3],cbPalette[1],cbPalette[7],cbPalette[8],cbPalette[2],cbPalette[5],cbPalette[4],cbPalette[6]) )
   
   lay = rbind(c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(3,3)) # layout with legend at right, small
   
@@ -180,7 +180,7 @@ plotCompGraphs = function(sols) {
 }
 
 ## Different Treatment Comparison
-plotTotalGraphs = function(sols) {
+plotTotalGraphs = function(sols,transfer_times) {
   # Total Population
   totPopPltDF = sols[[1]]$time
   for(sol in sols) {
@@ -198,6 +198,7 @@ plotTotalGraphs = function(sols) {
   
   pop1PhaPlt = ggplot(data=totPop1PhaPltDF)+
     geom_line(aes(x=time,y=value,colour=variable),size=0.75)+
+    geom_vline(xintercept=transfer_times, linetype="dotted")+
     scale_colour_manual("",values=totPop1PhaLegend)+ # "" Removes legend title
     scale_y_continuous(labels=fancy_scientific)+
     labs(x="",y="Total Bacteria \n(CFU/mL)")+
@@ -207,6 +208,7 @@ plotTotalGraphs = function(sols) {
   
   pop2PhaPlt = ggplot(data=totPop2PhaPltDF)+
     geom_line(aes(x=time,y=value,colour=variable),size=0.75)+
+    geom_vline(xintercept=transfer_times, linetype="dotted")+
     scale_colour_manual("",values=totPop2PhaLegend)+ # "" Removes legend title
     scale_y_continuous(labels=fancy_scientific)+
     labs(x="",y="Total Bacterial \n(CFU/mL)")+
@@ -232,6 +234,7 @@ plotTotalGraphs = function(sols) {
   
   fra11PhaPlt = ggplot(data=fra1Pop1PhaPltDF)+
     geom_line(aes(x=time,y=value,colour=variable),size=0.75)+
+    geom_vline(xintercept=transfer_times, linetype="dotted")+
     scale_colour_manual("",values=fra1Pop1PhaLegend)+ # "" Removes legend title
     labs(x="",y="Fraction Resistant \nto Phage 1")+
     theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 18 is label text size
@@ -240,6 +243,7 @@ plotTotalGraphs = function(sols) {
   
   fra12PhaPlt = ggplot(data=fra1Pop2PhaPltDF)+
     geom_line(aes(x=time,y=value,colour=variable),size=0.75)+
+    geom_vline(xintercept=transfer_times, linetype="dotted")+
     scale_colour_manual("",values=fra1Pop2PhaLegend)+ # "" Removes legend title
     labs(x="",y="Fraction Resistant \nto Phage 1")+
     theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 18 is label text size
@@ -259,6 +263,7 @@ plotTotalGraphs = function(sols) {
   
   fraTPlt = ggplot(data=fraTPopPltDF)+
     geom_line(aes(x=time,y=value,colour=variable),size=0.75)+
+    geom_vline(xintercept=transfer_times, linetype="dotted")+
     scale_colour_manual("",values=fraTPopLegend)+ # "" Removes legend title
     labs(x="Time (h)",y="Fraction Resistant \nto Phages 1 and 2")+
     theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 18 is label text size

@@ -73,14 +73,14 @@ fitLogisticEquation = function(indepVar,depVar1,depVar2,depVar1_Err,depVar2_Err,
   names(df)[4] = "Err" # Add labels for legend
   
   graph = ggplot(data=df,aes(x=time,y=value,colour=variable))+
-    geom_point(aes(x=time,y=value,colour=variable),size=10)+
-    geom_errorbar(aes(ymin=value-Err,ymax=value+Err),width=0.3,size=3,alpha=0.5)+
-    geom_line(data=fit,aes(x=x,y=y1), size=3,color=col1,alpha=0.5)+
-    geom_line(data=fit,aes(x=x,y=y2), size=3,color=col2,alpha=0.5)+
+    geom_point(aes(x=time,y=value,colour=variable),size=6)+
+    geom_errorbar(aes(ymin=value-Err,ymax=value+Err),width=0.3,size=1.5,alpha=0.75)+
+    geom_line(data=fit,aes(x=x,y=y1), size=2,color=col1,alpha=0.5)+
+    geom_line(data=fit,aes(x=x,y=y2), size=2,color=col2,alpha=0.5)+
     
     scale_colour_manual("",values=leg)+ # "" Removes legend title
-    theme_bw()+labs(x=title_x,y=title_y)+
-    theme(title=element_text(size=24), axis.text=element_text(size=20))+
+    theme_bw(30)+labs(x=title_x,y=title_y)+
+    #theme(title=element_text(size=24), axis.text=element_text(size=20))+
     ggtitle(title)
   
   return(list(graph,K1,r1,phi1,K2,r2,phi2))
@@ -89,7 +89,7 @@ fitLogisticEquation = function(indepVar,depVar1,depVar2,depVar1_Err,depVar2_Err,
 GrowthCurveDataAbs = read_csv("dat/GrowthCurveDataAbsorbance.csv")[1:10,]
 GrowthCurveDataDil = read_csv("dat/GrowthCurveDataDilution.csv")[1:11,]
 # This used to get estimate of r using absorbance curves:
-out1 = fitLogisticEquation(GrowthCurveDataAbs$Time,GrowthCurveDataAbs$NoPhage,GrowthCurveDataAbs$Antibiotic,GrowthCurveDataAbs$NoPhage_StdErr,GrowthCurveDataAbs$Antibiotic_StdErr,"No Antibiotic","Chloramphenicol",0.6,"","Time (h)","Absorbance (AU)",'#407ffc','#f1ac00')
+out1 = fitLogisticEquation(GrowthCurveDataAbs$Time,GrowthCurveDataAbs$NoPhage,GrowthCurveDataAbs$Antibiotic,GrowthCurveDataAbs$NoPhage_StdErr,GrowthCurveDataAbs$Antibiotic_StdErr,"No Antibiotic   ","Chloramphenicol",0.6,"","Time (h)","Absorbance (AU)",'#407ffc','#f1ac00')
 abs = out1[[1]] # get graph
 penalty = 1 - round(out1[[6]]/out1[[3]],5) # get penalty of antibiotic on reproduction
 abs = abs + annotate(parse=TRUE,"text", x=0.2*max(GrowthCurveDataAbs$Time), y=0.9*max(GrowthCurveDataAbs$NoPhage), size=10, color="#505050", label="'Specific growth rate ('*italic(r)*')'" )
