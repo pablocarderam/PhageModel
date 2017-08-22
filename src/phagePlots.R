@@ -30,6 +30,7 @@ singlePhageGraphs = function(sol,title,legend,y_axis) {
     labs(x="Time (h)",y="Phage (PFU/mL)")+
     theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 24 is label text size
     ggtitle(title)+
+    theme(plot.title = element_text(size=12))+
     theme(axis.title.x=element_blank())
   
   # Bacterial Compartments
@@ -75,8 +76,9 @@ dualPhageGraphs = function(sol,title,legend,y_axis) {
     scale_colour_manual("",values=phaLegend)+ # "" Removes legend title
     scale_y_continuous(labels=fancy_scientific)+
     labs(x="Time (h)",y="Phage (PFU/mL)")+
-    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 18 is label text size
+    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 7 is label text size
     ggtitle(title)+
+    theme(plot.title = element_text(size=12))+
     theme(axis.title.x=element_blank())
   
   # Large Bacterial Compartments
@@ -91,7 +93,7 @@ dualPhageGraphs = function(sol,title,legend,y_axis) {
     scale_colour_manual("",values=bigBactLegend)+ # "" Removes legend title
     scale_y_continuous(labels=fancy_scientific)+
     labs(x="Time (h)",y="Bacteria (CFU/mL)")+
-    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 18 is label text size
+    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 7 is label text size
     theme(axis.title.x=element_blank())
   
   # Small Bacterial Compartments
@@ -106,7 +108,7 @@ dualPhageGraphs = function(sol,title,legend,y_axis) {
     scale_colour_manual("",values=smlBactLegend)+ # "" Removes legend title
     scale_y_continuous(labels=fancy_scientific)+
     labs(x="Time (h)",y="Bacteria (CFU/mL)")+
-    theme_bw(7) + theme(legend.key.height=unit(0.5,"line")) # 18 is label text size
+    theme_bw(7) + theme(legend.key.height=unit(0.5,"line")) # 7 is label text size
   
   if(!legend) { # if no legend is to be shown, get rid of it
     phaPlt = phaPlt + theme(legend.position = "none")
@@ -172,7 +174,7 @@ plotCompGraphs = function(sols) {
   
   leg = getFullLegend(legendDF,c("time","Susceptible","Resistant to both phages  ","Resistant to Phage 1 only   ","Resistant to Phage 2 only   ","Infected with Phage 1      ","Infected with Phage 2      ","Phage 1","Phage 2"),c(cbPalette[3],cbPalette[1],cbPalette[7],cbPalette[8],cbPalette[2],cbPalette[5],cbPalette[4],cbPalette[6]) )
   
-  lay = rbind(c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(3,3)) # layout with legend at right, small
+  lay = rbind(c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(3,3)) # layout with legend at bottom, small
   
   gCompartments = arrangeGrob(g0A,g1A,leg, layout_matrix = lay) # combine all compartment plots
   
@@ -180,7 +182,13 @@ plotCompGraphs = function(sols) {
 }
 
 ## Different Treatment Comparison
-plotTotalGraphs = function(sols,transfer_times) {
+plotTotalGraphs = function(sols,title,transfer_times=c(),y_axis=T) {
+  show_transfers = 1 # opacity of vertical dotted transfer lines
+  if(length(transfer_times) == 0) {# if there are no transfers
+    show_transfers = 0 # hides vertical transfer lines
+    transfer_times=c(0) # the vector can't be empty, so puts something inside
+  }
+  
   # Total Population
   totPopPltDF = sols[[1]]$time
   for(sol in sols) {
@@ -198,21 +206,23 @@ plotTotalGraphs = function(sols,transfer_times) {
   
   pop1PhaPlt = ggplot(data=totPop1PhaPltDF)+
     geom_line(aes(x=time,y=value,colour=variable),size=0.75)+
-    geom_vline(xintercept=transfer_times, linetype="dotted")+
+    geom_vline(xintercept=transfer_times, linetype="dotted", alpha=show_transfers)+
     scale_colour_manual("",values=totPop1PhaLegend)+ # "" Removes legend title
     scale_y_continuous(labels=fancy_scientific)+
     labs(x="",y="Total Bacteria \n(CFU/mL)")+
-    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 18 is label text size
+    ggtitle(title)+
+    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 7 is label text size
+    theme(plot.title = element_text(size=12))+
     theme(axis.title.x=element_blank())+
     theme(legend.position = "none")
   
   pop2PhaPlt = ggplot(data=totPop2PhaPltDF)+
     geom_line(aes(x=time,y=value,colour=variable),size=0.75)+
-    geom_vline(xintercept=transfer_times, linetype="dotted")+
+    geom_vline(xintercept=transfer_times, linetype="dotted", alpha=show_transfers)+
     scale_colour_manual("",values=totPop2PhaLegend)+ # "" Removes legend title
     scale_y_continuous(labels=fancy_scientific)+
     labs(x="",y="Total Bacterial \n(CFU/mL)")+
-    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 18 is label text size
+    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 7 is label text size
     theme(axis.title.x=element_blank())+
     theme(legend.position = "none")
   
@@ -234,19 +244,19 @@ plotTotalGraphs = function(sols,transfer_times) {
   
   fra11PhaPlt = ggplot(data=fra1Pop1PhaPltDF)+
     geom_line(aes(x=time,y=value,colour=variable),size=0.75)+
-    geom_vline(xintercept=transfer_times, linetype="dotted")+
+    geom_vline(xintercept=transfer_times, linetype="dotted", alpha=show_transfers)+
     scale_colour_manual("",values=fra1Pop1PhaLegend)+ # "" Removes legend title
     labs(x="",y="Fraction Resistant \nto Phage 1")+
-    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 18 is label text size
+    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 7 is label text size
     theme(axis.title.x=element_blank())+
     theme(legend.position = "none")
   
   fra12PhaPlt = ggplot(data=fra1Pop2PhaPltDF)+
     geom_line(aes(x=time,y=value,colour=variable),size=0.75)+
-    geom_vline(xintercept=transfer_times, linetype="dotted")+
+    geom_vline(xintercept=transfer_times, linetype="dotted", alpha=show_transfers)+
     scale_colour_manual("",values=fra1Pop2PhaLegend)+ # "" Removes legend title
     labs(x="",y="Fraction Resistant \nto Phage 1")+
-    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 18 is label text size
+    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 7 is label text size
     theme(axis.title.x=element_blank())+
     theme(legend.position = "none")
   
@@ -263,12 +273,19 @@ plotTotalGraphs = function(sols,transfer_times) {
   
   fraTPlt = ggplot(data=fraTPopPltDF)+
     geom_line(aes(x=time,y=value,colour=variable),size=0.75)+
-    geom_vline(xintercept=transfer_times, linetype="dotted")+
+    geom_vline(xintercept=transfer_times, linetype="dotted", alpha=show_transfers)+
     scale_colour_manual("",values=fraTPopLegend)+ # "" Removes legend title
     labs(x="Time (h)",y="Fraction Resistant \nto Phages 1 and 2")+
-    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 18 is label text size
-    theme(legend.position = "bottom",legend.text=element_text(size=8))+
-    guides(colour=guide_legend(nrow=2,byrow=TRUE))
+    theme_bw(7) + theme(legend.key.height=unit(0.5,"line"))+ # 7 is label text size
+    theme(legend.position = "none")
+  
+  if(!y_axis) { # if y axis is not to be shown, get rid of y axis labels
+    pop1PhaPlt = pop1PhaPlt + theme(axis.title.y=element_blank())
+    pop2PhaPlt = pop2PhaPlt + theme(axis.title.y=element_blank())
+    fra11PhaPlt = fra11PhaPlt + theme(axis.title.y=element_blank())
+    fra12PhaPlt = fra12PhaPlt + theme(axis.title.y=element_blank())
+    fraTPlt = fraTPlt + theme(axis.title.y=element_blank())
+  }
   
   # Align and plot graphs as per https://github.com/tidyverse/ggplot2/wiki/Align-two-plots-on-a-page combining two plots
   gPop1Pha = ggplotGrob(pop1PhaPlt)
@@ -277,15 +294,43 @@ plotTotalGraphs = function(sols,transfer_times) {
   gFra12Pha = ggplotGrob(fra12PhaPlt)
   gFraT = ggplotGrob(fraTPlt)
   
-  gComparison = rbind(gPop1Pha,gPop2Pha,gFra11Pha,gFra12Pha,gFraT,size="first") # stack the two plots
-  gComparison$widths = unit.pmax(gPop1Pha$widths,gPop2Pha$widths,gFra11Pha$widths,gFra12Pha$widths,gFraT$widths) # use the largest widths
+  maxCols = max(ncol(gPop1Pha),ncol(gPop2Pha),ncol(gFra11Pha),ncol(gFra12Pha),ncol(gFraT))
+  
+  gList = lapply(list(gPop1Pha,gPop2Pha,gFra11Pha,gFra12Pha,gFraT),function(g) {
+    while(ncol(g) < maxCols) {
+      g = gtable_add_cols(g, unit(0,"mm")) # add a column for missing legend
+    }
+    return(g)
+  })
+  
+  gComparison = rbind(gList[[1]],gList[[2]],gList[[3]],gList[[4]],gList[[5]],size="first") # stack the two plots
+  gComparison$widths = unit.pmax(gList[[1]]$widths,gList[[2]]$widths,gList[[3]]$widths,gList[[4]]$widths,gList[[5]]$widths) # use the largest widths
   
   return(gComparison)
 }
 
-# Plot all:
-gCompartments = plotCompGraphs(sols)
-gTotals = plotTotalGraphs(sols)
+plotAllTotals = function(solsCulture,solsTransfers,transfer_times) {
+  gTotalsCult = plotTotalGraphs(solsCulture,"Continuous Culture") # compares treatments by graphing total populations and resistant fractions
+  gTotalsTransf = plotTotalGraphs(solsTransfers,"Culture Transfers",c(transfer_times),y_axis=F) # compares treatments by graphing total populations and resistant fractions
+  
+  legendDF = solsCulture[[1]]$time # will contain dummy dataframe to make a plot from which we extract the legend
+  for(sol in solsCulture) {
+    legendDF = cbind.data.frame(legendDF,sol$fracResT) # Get only data used in this dummy graph
+  }
+  legLabs = c("time","Single phage, no antibiotic   ","Single phage, antibiotic   ","Two phages, no antibiotic   ","Two phages, antibiotic   ") # Add labels for legend
+  legCols = c(cbPalette[2],cbPalette[3],cbPalette[4],cbPalette[5]) # select colors
+  leg = getFullLegend(legendDF,legLabs,legCols) # pull only legend
+  
+  lay = rbind(c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(1,2),c(3,3)) # layout with legend at bottom, small
+  
+  gTotals = arrangeGrob(gTotalsCult,gTotalsTransf,leg, layout_matrix = lay) # combine both plots
+  
+  return(gTotals)
+}
 
-ggsave(filename="compartments.png",path="plt/",plot=gCompartments,width = 7, height = 6, units = c("in"), dpi = 300)
-ggsave(filename="totals.png",path="plt/",plot=gTotals,width = 4, height = 6, units = c("in"), dpi = 300)
+# # Plot all:
+# gCompartments = plotCompGraphs(sols)
+# gTotals = plotTotalGraphs(sols)
+# 
+# ggsave(filename="compartments.png",path="plt/",plot=gCompartments,width = 7, height = 6, units = c("in"), dpi = 300)
+# ggsave(filename="totals.png",path="plt/",plot=gTotals,width = 4, height = 6, units = c("in"), dpi = 300)

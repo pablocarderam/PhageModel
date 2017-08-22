@@ -73,14 +73,12 @@ fitLogisticEquation = function(indepVar,depVar1,depVar2,depVar1_Err,depVar2_Err,
   names(df)[4] = "Err" # Add labels for legend
   
   graph = ggplot(data=df,aes(x=time,y=value,colour=variable))+
-    geom_point(aes(x=time,y=value,colour=variable),size=6)+
-    geom_errorbar(aes(ymin=value-Err,ymax=value+Err),width=0.3,size=1.5,alpha=0.75)+
-    geom_line(data=fit,aes(x=x,y=y1), size=2,color=col1,alpha=0.5)+
-    geom_line(data=fit,aes(x=x,y=y2), size=2,color=col2,alpha=0.5)+
-    
+    geom_point(aes(x=time,y=value,colour=variable),size=2)+
+    geom_errorbar(aes(ymin=value-Err,ymax=value+Err),width=0.6,size=0.75,alpha=0.75)+
+    geom_line(data=fit,aes(x=x,y=y1), size=1,color=col1,alpha=0.5)+
+    geom_line(data=fit,aes(x=x,y=y2), size=1,color=col2,alpha=0.5)+
     scale_colour_manual("",values=leg)+ # "" Removes legend title
-    theme_bw(30)+labs(x=title_x,y=title_y)+
-    #theme(title=element_text(size=24), axis.text=element_text(size=20))+
+    theme_bw(7)+labs(x=title_x,y=title_y)+
     ggtitle(title)
   
   return(list(graph,K1,r1,phi1,K2,r2,phi2))
@@ -89,20 +87,26 @@ fitLogisticEquation = function(indepVar,depVar1,depVar2,depVar1_Err,depVar2_Err,
 GrowthCurveDataAbs = read_csv("dat/GrowthCurveDataAbsorbance.csv")[1:10,]
 GrowthCurveDataDil = read_csv("dat/GrowthCurveDataDilution.csv")[1:11,]
 # This used to get estimate of r using absorbance curves:
-out1 = fitLogisticEquation(GrowthCurveDataAbs$Time,GrowthCurveDataAbs$NoPhage,GrowthCurveDataAbs$Antibiotic,GrowthCurveDataAbs$NoPhage_StdErr,GrowthCurveDataAbs$Antibiotic_StdErr,"No Antibiotic   ","Chloramphenicol",0.6,"","Time (h)","Absorbance (AU)",'#407ffc','#f1ac00')
+out1 = fitLogisticEquation(GrowthCurveDataAbs$Time,GrowthCurveDataAbs$NoPhage,GrowthCurveDataAbs$Antibiotic,GrowthCurveDataAbs$NoPhage_StdErr,GrowthCurveDataAbs$Antibiotic_StdErr,"No Antibiotic   ","Antibiotic",0.6,"","Time (h)","Absorbance (AU)",'#407ffc','#f1ac00')
 abs = out1[[1]] # get graph
 penalty = 1 - round(out1[[6]]/out1[[3]],5) # get penalty of antibiotic on reproduction
-abs = abs + annotate(parse=TRUE,"text", x=0.2*max(GrowthCurveDataAbs$Time), y=0.9*max(GrowthCurveDataAbs$NoPhage), size=10, color="#505050", label="'Specific growth rate ('*italic(r)*')'" )
-abs = abs + annotate("text", x=0.2*max(GrowthCurveDataAbs$Time), y=0.8*max(GrowthCurveDataAbs$NoPhage), size=10, color="#505050", label="fractional decrease in presence" )
-abs = abs + annotate("text", x=0.2*max(GrowthCurveDataAbs$Time), y=0.7*max(GrowthCurveDataAbs$NoPhage), size=10, color="#505050", label=paste("of antibiotic: ", penalty) )
-abs = abs + theme(legend.position = "bottom",legend.text=element_text(size=24))
+abs = abs + annotate(parse=TRUE,"text", x=0.2*max(GrowthCurveDataAbs$Time), y=0.9*max(GrowthCurveDataAbs$NoPhage), size=3, color="#505050", label="'Specific growth rate ('*italic(r)*')'" )
+abs = abs + annotate("text", x=0.2*max(GrowthCurveDataAbs$Time), y=0.8*max(GrowthCurveDataAbs$NoPhage), size=3, color="#505050", label="fractional decrease in presence" )
+abs = abs + annotate("text", x=0.2*max(GrowthCurveDataAbs$Time), y=0.7*max(GrowthCurveDataAbs$NoPhage), size=3, color="#505050", label=paste("of antibiotic: ", penalty) )
+abs = abs + theme(legend.position = "bottom",legend.text=element_text(size=7))
 # This used to get estimate of CFU at K:
 out2 = fitLogisticEquation(GrowthCurveDataDil$Time,GrowthCurveDataDil$NoPhage/10,GrowthCurveDataDil$NoPhage/10,GrowthCurveDataDil$NoPhage_StdErr/10,GrowthCurveDataDil$NoPhage_StdErr/10,"No Antibiotic","No Antibiotic",10^8,"","Time (h)","CFU/mL",'#407ffc','#407ffc')
 dil = out2[[1]] # get graph
-dil = dil + annotate("text",x=0.2*max(GrowthCurveDataDil$Time),y=0.9*max(GrowthCurveDataDil$NoPhage/10),parse=TRUE,size=10,color="#505050",label=paste("italic(K)*' = '*",fancy_scientific(out2[[2]]),"*' CFU/mL'" ) )
-dil = dil + annotate("text",x=0.2*max(GrowthCurveDataDil$Time),y=0.8*max(GrowthCurveDataDil$NoPhage/10),parse=TRUE,size=10,color="#505050",label=paste("italic(r)*' = '*",round(out2[[3]],5),"*' CFU (mL h)'^{-1}" ) )
-dil = dil + annotate("text",x=0.2*max(GrowthCurveDataDil$Time),y=0.7*max(GrowthCurveDataDil$NoPhage/10),parse=TRUE,size=10,color="#505050",label=paste("italic(φ)*' = '*",round(out2[[4]],5)) )
+dil = dil + annotate("text",x=0.2*max(GrowthCurveDataDil$Time),y=0.9*max(GrowthCurveDataDil$NoPhage/10),parse=TRUE,size=3,color="#505050",label=paste("italic(K)*' = '*",fancy_scientific(out2[[2]]),"*' CFU/mL'" ) )
+dil = dil + annotate("text",x=0.2*max(GrowthCurveDataDil$Time),y=0.8*max(GrowthCurveDataDil$NoPhage/10),parse=TRUE,size=3,color="#505050",label=paste("italic(r)*' = '*",round(out2[[3]],5),"*' CFU (mL h)'^{-1}" ) )
+dil = dil + annotate("text",x=0.2*max(GrowthCurveDataDil$Time),y=0.7*max(GrowthCurveDataDil$NoPhage/10),parse=TRUE,size=3,color="#505050",label=paste("italic(φ)*' = '*",round(out2[[4]],5)) )
 dil = dil + scale_y_continuous(labels=fancy_scientific)
 dil = dil + theme(legend.position = "none")
 
-multiplot(dil,abs,layout=matrix(c(1,2), ncol=1, byrow=TRUE))
+gDil = ggplotGrob(dil)
+gAbs = ggplotGrob(abs)
+
+lay = rbind(c(1),c(2)) # layout
+
+gFit = arrangeGrob(gDil,gAbs, layout_matrix = lay) # combine both plots
+ggsave(filename="LogisticFit.png",path="plt/",plot=gFit,width = 5, height = 5, units = c("in"), dpi = 300)
