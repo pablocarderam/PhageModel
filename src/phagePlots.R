@@ -7,7 +7,6 @@ library(gtable) # needed to align plots, use rbind for grobs
 library(grid) # needed to align plots
 library(gridExtra) # needed to align plots
 library(reshape2) # allows easy ggplot data input format
-source("src/dep/multiplot.R") # needed for plots
 source("src/dep/fancyScientific.R") # needed for plots
 
 ## Colorblind-friendly palette with black, 
@@ -184,7 +183,7 @@ plotCompGraphs = function(sols) {
 ## Different Treatment Comparison
 plotTotalGraphs = function(sols,title,transfer_times=c(),y_axis=T) {
   show_transfers = 1 # opacity of vertical dotted transfer lines
-  if(length(transfer_times) == 0) {# if there are no transfers
+  if(length(transfer_times) == 0) { # if there are no transfers
     show_transfers = 0 # hides vertical transfer lines
     transfer_times=c(0) # the vector can't be empty, so puts something inside
   }

@@ -12,7 +12,6 @@ library(readr) # reads files
 library(car) # for initial parameter estimate
 library(minpack.lm) # More robust to bad starting parameters than nls 
 library(ggplot2) # C'mon, who uses R's native graphs?
-source("src/dep/multiplot.r") # Needed for graphing
 source("src/dep/fancyScientific.R") # Needed for graphing
 
 fitLogisticEquation = function(indepVar,depVar1,depVar2,depVar1_Err,depVar2_Err,nameDepVar1,nameDepVar2,est_K,title,title_x,title_y,col1,col2) {
@@ -84,8 +83,9 @@ fitLogisticEquation = function(indepVar,depVar1,depVar2,depVar1_Err,depVar2_Err,
   return(list(graph,K1,r1,phi1,K2,r2,phi2))
 }
 
-GrowthCurveDataAbs = read_csv("dat/GrowthCurveDataAbsorbance.csv")[1:10,]
-GrowthCurveDataDil = read_csv("dat/GrowthCurveDataDilution.csv")[1:11,]
+GrowthCurveDataAbs = read_csv("dat/GrowthCurveDataAbsorbance.csv")[1:10,] # Last datapoint discarded for goodness of fit
+GrowthCurveDataDil = read_csv("dat/GrowthCurveDataDilution.csv")
+
 # This used to get estimate of r using absorbance curves:
 out1 = fitLogisticEquation(GrowthCurveDataAbs$Time,GrowthCurveDataAbs$NoPhage,GrowthCurveDataAbs$Antibiotic,GrowthCurveDataAbs$NoPhage_StdErr,GrowthCurveDataAbs$Antibiotic_StdErr,"No Antibiotic   ","Antibiotic",0.6,"","Time (h)","Absorbance (AU)",'#407ffc','#f1ac00')
 abs = out1[[1]] # get graph
@@ -94,6 +94,7 @@ abs = abs + annotate(parse=TRUE,"text", x=0.2*max(GrowthCurveDataAbs$Time), y=0.
 abs = abs + annotate("text", x=0.2*max(GrowthCurveDataAbs$Time), y=0.8*max(GrowthCurveDataAbs$NoPhage), size=3, color="#505050", label="fractional decrease in presence" )
 abs = abs + annotate("text", x=0.2*max(GrowthCurveDataAbs$Time), y=0.7*max(GrowthCurveDataAbs$NoPhage), size=3, color="#505050", label=paste("of antibiotic: ", penalty) )
 abs = abs + theme(legend.position = "bottom",legend.text=element_text(size=7))
+
 # This used to get estimate of CFU at K:
 out2 = fitLogisticEquation(GrowthCurveDataDil$Time,GrowthCurveDataDil$NoPhage/10,GrowthCurveDataDil$NoPhage/10,GrowthCurveDataDil$NoPhage_StdErr/10,GrowthCurveDataDil$NoPhage_StdErr/10,"No Antibiotic","No Antibiotic",10^8,"","Time (h)","CFU/mL",'#407ffc','#407ffc')
 dil = out2[[1]] # get graph
