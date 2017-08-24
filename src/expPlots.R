@@ -19,6 +19,9 @@ source("src/phageSolveODE.R") # needed for ODE
 # developed by Okabe M. and Ito K. http://jfly.iam.u-tokyo.ac.jp/color/
 cbPalette = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
+# Shape palette
+shapePalette = 1:20#c("a","b","c","d","e","f","g","h","i","j")
+
 plotExp = function(dat,series_labs,series_cols,model) {
   pts = dat$time*24 # graph in hours
   err = dat$time*24
@@ -35,15 +38,18 @@ plotExp = function(dat,series_labs,series_cols,model) {
   pts = cbind.data.frame(pts,err$value) # combine into a single df
   names(pts)[4] = "Err"
   
-  graph = ggplot(data=pts,aes(x=time,y=value,colour=variable))+ 
-    geom_errorbar(aes(ymin=value-Err,ymax=value+Err),width=7,size=0.75,alpha=0.75)+
+  series_shape = shapePalette[1:length(unique(pts$variable))]
+  
+  graph = ggplot(data=pts,aes(x=time,y=value,colour=variable,shape=variable))+ 
+    geom_errorbar(aes(ymin=value-Err,ymax=value+Err),width=7,size=0.75,alpha=0.5)+
     geom_line(data=model,aes(x=time,y=value,colour=variable),linetype="dashed", show.legend = FALSE, size=1,alpha=0.5)+
     geom_line(aes(x=time,y=value,colour=variable),size=0.75)+
-    geom_point(aes(x=time,y=value,colour=variable),size=2.5)+ # graph on top of everything else
+    geom_point(aes(x=time,y=value,colour=variable,shape=variable),size=2.5)+ # graph on top of everything else
     labs(x="Time (h)",y="Fraction Resistant to San23")+
     theme_bw(9)+
-    scale_colour_manual("",values=series_cols)+ # "" Removes legend title
-    guides(fill = guide_legend(override.aes = list(linetype = 0, shape='')), colour = guide_legend(override.aes = list(linetype=c(rep(1,length(series_labs)),rep(2,3)), shape=c(rep(16,length(series_labs)),rep(NA,3)))))
+    scale_colour_manual(name="",labels=c( series_labs,"Single phage, no antibiotic (model)   ","Single phage, with antibiotic (model)   ","Two phages, no antibiotic (model)   " ),values=series_cols)+ # "" Removes legend title TODO: THIS IS A HACK for the labels
+    scale_shape_manual(name="",labels=c( series_labs,"Single phage, no antibiotic (model)   ","Single phage, with antibiotic (model)   ","Two phages, no antibiotic (model)   " ),values=c(series_shape,rep(NA,3)))+ # "" Removes legend title
+    guides(fill = guide_legend(override.aes = list(linetype = 0, shape='')), colour = guide_legend(override.aes = list(linetype=c(rep(1,length(series_labs)),rep(2,3)))))
     theme(legend.position = "right",legend.text=element_text(size=7))+
     theme(legend.margin=margin(t=-0.2, r=0, b=0, l=0, unit="cm")) # move legend up
   

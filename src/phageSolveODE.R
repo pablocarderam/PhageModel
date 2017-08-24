@@ -132,14 +132,14 @@ runTransferExperiment = function(pParam, transfer_times) {
     init_cond = lapply(newSols, function(sol) { 
       # set these cultures' final conditions, multiplied by the dilution factor of the transfer,
         # to be the new starting conditions
-      i_cond = c(S=sol$S[[nrow(sol)]]*param[["d"]],
-                 R1=sol$R1[[nrow(sol)]]*param[["d"]],
-                 R2=sol$R2[[nrow(sol)]]*param[["d"]],
-                 R12=sol$R12[[nrow(sol)]]*param[["d"]],
-                 I1=sol$I1[[nrow(sol)]]*param[["d"]],
-                 I2=sol$I2[[nrow(sol)]]*param[["d"]],
-                 V1=sol$V1[[nrow(sol)]]*param[["d"]],
-                 V2=sol$V2[[nrow(sol)]]*param[["d"]]
+      i_cond = c(S=sol$S[[nrow(sol)]]*param[["v"]],
+                 R1=sol$R1[[nrow(sol)]]*param[["v"]],
+                 R2=sol$R2[[nrow(sol)]]*param[["v"]],
+                 R12=sol$R12[[nrow(sol)]]*param[["v"]],
+                 I1=sol$I1[[nrow(sol)]]*param[["v"]],
+                 I2=sol$I2[[nrow(sol)]]*param[["v"]],
+                 V1=sol$V1[[nrow(sol)]]*param[["v"]],
+                 V2=sol$V2[[nrow(sol)]]*param[["v"]]
                  ) 
       
       return(i_cond)

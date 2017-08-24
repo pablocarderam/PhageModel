@@ -14,6 +14,7 @@ source("src/dep/fancyScientific.R") # needed for plots
 # developed by Okabe M. and Ito K. http://jfly.iam.u-tokyo.ac.jp/color/
 cbPalette = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
+
 ## Single Phage
 singlePhageGraphs = function(sol,title,legend,y_axis) {
   # Phage Compartment
@@ -326,10 +327,3 @@ plotAllTotals = function(solsCulture,solsTransfers,transfer_times) {
   
   return(gTotals)
 }
-
-# # Plot all:
-# gCompartments = plotCompGraphs(sols)
-# gTotals = plotTotalGraphs(sols)
-# 
-# ggsave(filename="compartments.png",path="plt/",plot=gCompartments,width = 7, height = 6, units = c("in"), dpi = 300)
-# ggsave(filename="totals.png",path="plt/",plot=gTotals,width = 4, height = 6, units = c("in"), dpi = 300)
