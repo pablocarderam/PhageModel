@@ -59,8 +59,8 @@ dX = function(t,X,pParam){
     dR12 = r*(1-alp*a)*R12*(1-(S+R1+R2+R12+I1+I2)/k) + (m-m^2)*R1 + (m-m^2)*R2 + m^2*S   - (2*m-m^2)*R12
     dI1  = bet1*(S+R2)*V1 - 1/lam1*I1
     dI2  = bet2*(S+R1)*V2 - 1/lam2*I2
-    dV1  = b1*1/lam1*I1 - bet1*(S+R2+I1)*V1 - mu1*V1
-    dV2  = b2*1/lam2*I2 - bet2*(S+R1+I2)*V2 - mu2*V2
+    dV1  = b1*1/lam1*I1 - bet1*(S+R2)*V1 - mu1*V1
+    dV2  = b2*1/lam2*I2 - bet2*(S+R1)*V2 - mu2*V2
     
     # Make list with state variable differentials
     dy = c(dS,dR1,dR2,dR12,dI1,dI2,dV1,dV2)
@@ -75,7 +75,7 @@ runCulture = function(pParam,initial_conditions,t_vec) {
     paramAB = pParam # create separate vector for antibiotic case
     paramAB["a"] = 1 # add antibiotic
     
-    ## Calculate System Solution Numerically (fourth order Runge Kutta implementation)
+    ## Calculate System Solution Numerically (LSODA)
     sol_1Phage = as.data.frame(lsoda(initial_conditions[[1]],t_vec,dX,pParam)) # one solution with one phage
     sol_1Phage_AB = as.data.frame(lsoda(initial_conditions[[2]],t_vec,dX,paramAB)) # one solution with one phage + antibiotic
     sol_2Phage = as.data.frame(lsoda(initial_conditions[[3]],t_vec,dX,pParam)) # one solution with two phages
